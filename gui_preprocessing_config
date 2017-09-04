@@ -1,0 +1,11 @@
+analysisname = '_task_hp128_fwhm0'
+condi = ['down_left','up_left','down_right','up_right']
+
+template_filename = 'sub-1_s1.fsf'
+template_project_dir = '/project/3018035.03/fMRI/pRF_figureground/data'
+template_output_dir ='/project/3018035.03/fMRI/pRF_figureground/data/sub-1/func'
+template_4dfile ='task-1'
+
+sesnum = 4
+sesname = ['task-1','task-2','task-3','task-4']
+

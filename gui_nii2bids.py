@@ -93,17 +93,17 @@ subj_num=subj_num[0]
 #%% Need to be changed 
 for i in range(len(fmri_filetype)):
     if fmri_filetype[i]=='Task':
-        if not os.path.exists(project_path+'/sub-'+subj_num+'/func'):
-            os.makedirs(project_path+'/sub-'+subj_num+'/func')
-        copy2(fmri_filedir[i],project_path+'/sub-'+subj_num+'/func/'+'sub-'+subj_num+'_task-'+fmri_filesession[i]+'_bold.nii.gz')
+        if not os.path.exists(project_path+'/data/sub-'+subj_num+'/func'):
+            os.makedirs(project_path+'/data/sub-'+subj_num+'/func')
+        copy2(fmri_filedir[i],project_path+'/data/sub-'+subj_num+'/func/'+'sub-'+subj_num+'_task-'+fmri_filesession[i]+'_bold.nii.gz')
     elif fmri_filetype[i]=='pRF':
-        if not os.path.exists(project_path+'/sub-'+subj_num+'/func'):
-            os.makedirs(project_path+'/sub-'+subj_num+'/func')
-        copy2(fmri_filedir[i],project_path+'/sub-'+subj_num+'/func/'+'sub-'+subj_num+'_pRF-'+fmri_filesession[i]+'_bold.nii.gz')
+        if not os.path.exists(project_path+'/data/sub-'+subj_num+'/func'):
+            os.makedirs(project_path+'/data/sub-'+subj_num+'/func')
+        copy2(fmri_filedir[i],project_path+'/data/sub-'+subj_num+'/func/'+'sub-'+subj_num+'_pRF-'+fmri_filesession[i]+'_bold.nii.gz')
     elif fmri_filetype[i]=='Anat':
-        if not os.path.exists(project_path+'/sub-'+subj_num+'/anat'):
-            os.makedirs(project_path+'/sub-'+subj_num+'/anat')
-        copy2(fmri_filedir[i],project_path+'/sub-'+subj_num+'/anat/'+'sub-'+subj_num+'_T1w.nii.gz')
+        if not os.path.exists(project_path+'/data/sub-'+subj_num+'/anat'):
+            os.makedirs(project_path+'/data/sub-'+subj_num+'/anat')
+        copy2(fmri_filedir[i],project_path+'/data/sub-'+subj_num+'/anat/'+'sub-'+subj_num+'_anat.nii.gz')
     
         
             
