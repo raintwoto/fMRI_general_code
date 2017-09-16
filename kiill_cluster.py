@@ -6,8 +6,8 @@ Created on Sat Sep  2 22:53:58 2017
 @author: biahan
 """
 import subprocess
-
-for i in range(14177244,14177244+53):
+pp = 14193379
+for i in range(pp,pp+53):
     cmdline="qdel "+str(i)
     try:
         subprocess.call(cmdline,shell=True)

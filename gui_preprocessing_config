@@ -9,3 +9,10 @@ template_4dfile ='task-1'
 sesnum = 4
 sesname = ['task-1','task-2','task-3','task-4']
 
+
+prf_template_filename = 'sub-1_prf.fsf'
+prf_template_4dfile ='prf-1'
+
+prfnum = 4
+prfname = ['pRF-1','pRF-2','pRF-3','pRF-4']
+

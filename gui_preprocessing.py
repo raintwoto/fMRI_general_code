@@ -251,6 +251,62 @@ def reg_func():
                  
        
     
+def create_GLM_prf():
+    for (key,value) in selection_list.items():
+         if value==1:                         
+             for i in range(prfnum):
+                 new_file =directory+'/../logs/feat/'+key+'_'+prfname[i]+'.fsf'
+                 if not os.path.exists(new_file):
+                     copy2(directory+'/../logs/feat/'+prf_template_filename, new_file)
+                 else:
+                     results = tkMessageBox.askquestion("Same", "Analysis "+key+prfname[i]+" fsf file exists, do it again?", icon='warning')
+                     if results=='no':
+                         break
+                     else:
+                         copy2(directory+'/../logs/feat/'+template_filename, new_file)                             
+
+                 replace_word(new_file,template_project_dir,directory)
+                 replace_word(new_file,"set fmri(outputdir) \""+template_output_dir+"\"","set fmri(outputdir) \""+directory+"/"+key+"/func/"+prfname[i]+"\"")
+                 replace_word(new_file,prf_template_4dfile,prfname[i])
+                 replace_word(new_file,'sub-1',key)
+                 
+                
+                 if i>0:
+                     replace_word(new_file,'set fmri(alternateReference_yn) 0','set fmri(alternateReference_yn) 1')
+                     replace_word(new_file,'set fmri(confoundevs) 0', "set fmri(confoundevs) 0\n\n# Session's alternate reference image for analysis 1 \nset alt_ex_func(1) \""+directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz\"')
+                                  #not finished
+             Label(master, text='finished: '+ key).grid(row=14,column=1)
+             master.update()
+             
+def run_pRF():
+    log_directory = tkFileDialog.askdirectory(title="Select a Log Directory",initialdir=directory+'/../logs/' )
+    for (key,value) in selection_list.items():
+         if value==1:
+             if not os.path.exists(directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz'):
+                 tkMessageBox.showerror("error","example_fun.nii.gz not exist yet, wait ses 1 run")
+                 break             
+             for i in range(0,sesnum):
+                 if os.path.exists(directory+key+'/func/'+key+"_"+prfname[i]+'.feat'):
+                     results = tkMessageBox.askquestion("Same", "Analysis"+prfname[i]+" exists, do it again?", icon='warning')
+                     if results=='no':
+                         break
+                 fsf_file =log_directory+'/feat/'+key+"_"+prfname[i]+'.fsf'
+                 if not os.path.exists(fsf_file):
+                     tkMessageBox.showerror("error","fsf file for "+prfname[i]+' doesn\'t exist')
+    
+                 cmdline = "echo " + "\"feat "+ fsf_file + "\" > "+log_directory+"/"+key+"_"+prfname[i]+".sh"
+                 Label(master, text= key + ': wrtie to sh file' ).grid(row=15,column=1)
+                 master.update()
+                 output=subprocess.check_output(cmdline,shell=True)
+                 print(output)  
+                 Label(master, text= key + ': begin to submit to cluster' ).grid(row=15,column=1)
+                 master.update()               
+                 master.update()               
+                 cmdline = "qsub -N \'feat_"+ key + "\' -l \'procs=1,mem=12gb,walltime=22:00:00' "+log_directory+"/"+key+"_"+prfname[i]+".sh"
+                 output=subprocess.check_output(cmdline,shell=True)
+                 print(output)                   
+                 Label(master, text= key + ': finished the submission to cluster' ).grid(row=15,column=1)
+                 master.update()       
 
 
 
@@ -269,6 +325,10 @@ Button(master, text='Run Other Sesions ', command=run_ses_else).grid(row=9, colu
 ttk.Separator(master,orient = HORIZONTAL).grid(row=10,column=0,sticky="ew")
 Button(master, text='V1 and V2 ==> T1', command=reg_T1).grid(row=11, column=0, sticky=W, pady=0)
 Button(master, text='V1 and V2 ==> function', command=reg_func).grid(row=12, column=0, sticky=W, pady=0)
+
+ttk.Separator(master,orient = HORIZONTAL).grid(row=13,column=0,sticky="ew")
+Button(master, text='Create GLM file: PRF', command=create_GLM_prf).grid(row=14, column=0, sticky=W, pady=0)
+Button(master, text='Run pRF pre-processing', command=run_pRF).grid(row=15, column=0, sticky=W, pady=0)
 
 
 #ttk.Separator(master,orient = HORIZONTAL).grid(row=6,column=0,sticky="ew")
