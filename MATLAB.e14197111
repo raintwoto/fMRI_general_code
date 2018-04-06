@@ -1,2 +1,0 @@
-=>> PBS: job killed: walltime 14441 exceeded limit 14400
-/opt/cluster/bin/cluster-yadjobinfo: line 81:  4109 Terminated              sleep 1
