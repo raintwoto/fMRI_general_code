@@ -273,4 +273,4 @@ set feat_files(1) "DIRECTORY-X/SUB-X/func/SUB-X_task-SESSIONX_bold"
 set fmri(confoundevs) 0
 
 # Subject's structural image for analysis 1
-set highres_files(1) "DIRECTORY-X/SUB-X/anat/SUB-X_anat_brain"
+set highres_files(1) "DIRECTORY-X/SUB-X/anat/SUB-X_T1w_brain"
