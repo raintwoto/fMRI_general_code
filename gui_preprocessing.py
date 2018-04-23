@@ -15,6 +15,7 @@ import tkFileDialog
 import tkMessageBox
 import re
 import ttk
+from ttk import Combobox
 import os
 from shutil import *
 import subprocess
@@ -29,14 +30,16 @@ master = Tk()
 directory = tkFileDialog.askdirectory(
     title="Select data Directory", initialdir=initialdir)
 
-if not os.path.exists(directory+'/../logs/feat'):
-    os.makedirs(directory+'/../logs/feat')
-if not os.path.exists(directory+'/../logs/freesurfer'):
-    os.makedirs(directory+'/../logs/freesurfer')
-
 files = os.listdir(directory)
 log_directory = tkFileDialog.askdirectory(
     title="Select a Log Directory", initialdir=directory+'/../logs/')
+
+
+if not os.path.exists(log_directory+'/feat'):
+    os.makedirs(log_directory+'/feat')
+if not os.path.exists(log_directory+'/freesurfer'):
+    os.makedirs(log_directory+'/freesurfer')
+
 master.destroy()
 #%%
 
@@ -48,22 +51,6 @@ def find_between(s, first, last):
         return s[start:end]
     except ValueError:
         print "errors"
-
-
-file_text = open(directory+'/../logs/feat/'+template_filename, 'r')
-text = file_text.read()
-template_output_dir = find_between(text, 'set fmri(outputdir) "', '"')
-template_project_dir = find_between(text, 'set highres_files(1) "', '/sub')
-template_subjname_beh = find_between(text, '/info/', '_s')
-template_subjname = find_between(text, '/data/', '/func')
-template_4dfile = find_between(text, 'set feat_files(1) "', '"')
-
-
-prf_file_text = open(directory+'/../logs/feat/'+prf_template_filename, 'r')
-text = prf_file_text.read()
-prf_template_output_dir = find_between(text, 'set fmri(outputdir) "', '"')
-prf_template_subjname = find_between(text, '/data/', '/func')
-prf_template_4dfile = find_between(text, 'set feat_files(1) "', '"')
 
 
 master = Tk()
@@ -94,7 +81,7 @@ mainloop()
 
 # %%
 
-f = open(directory+'/../subjects.txt', 'w+')
+f = open(directory+'/../scripts/subjects.txt', 'w+')
 
 
 for (key, value) in selection_list.items():
@@ -161,144 +148,9 @@ def replace_word(infile, old_word, new_word):
     f2.write(m)
 
 
-def create_GLM():
-    for (key, value) in selection_list.items():
-        if value == 1:
-            beh = tkFileDialog.askopenfilename(
-                title="Select first file for session 1 for:" + key, initialdir=directory+'/'+key+'/info/')
-            if beh.find(condi[0]) == -1:
-                tkMessageBox.showerror("error", "selection not correct!")
-                break
-            else:
-                for i in range(sesnum):
-                    new_file = directory+'/../logs/feat/' + \
-                        key+'_s'+str(i+1)+analysisname+'.fsf'
-                    if not os.path.exists(new_file):
-                        copy2(directory+'/../logs/feat/' +
-                              template_filename, new_file)
-                    else:
-                        results = tkMessageBox.askquestion(
-                            "Same", "Analysis "+key+'_s'+str(i+1)+analysisname+" fsf file exists, do it again?", icon='warning')
-                        if results == 'no':
-                            break
-                        else:
-                            copy2(directory+'/../logs/feat/' +
-                                  template_filename, new_file)
-
-                    start_s = '/info/'
-                    end_s = '_s1'
-                    subjname_beh = beh[beh.find(
-                        start_s)+len(start_s):beh.rfind(end_s)]
-                    replace_word(new_file, "set fmri(outputdir) \""+template_output_dir+"\"",
-                                 "set fmri(outputdir) \""+directory+"/"+key+"/func/"+key+analysisname+'_s'+str(i+1)+"\"")
-                    replace_word(new_file, template_subjname_beh, subjname_beh)
-                    replace_word(new_file, template_project_dir, directory)
-                    new_4dfile = template_4dfile.replace(
-                        template_sesname, sesname[i])
-                    replace_word(new_file, template_4dfile, new_4dfile)
-                    replace_word(new_file, template_subjname, key)
-
-                    for k in range(0, len(template_condi)):
-                        replace_word(new_file, template_condi[k], condi[k])
-                    for k in range(0, len(template_other)):
-                        replace_word(new_file, template_other[k], new_other[k])
-
-                    for cond in condi:
-                        beh_new = beh.replace(condi[0], cond)
-                        beh_ses = beh_new.replace('s1', 's'+str(i+1))
-                        replace_word(new_file, beh_new, beh_ses)
-                    if i > 0:
-                        replace_word(new_file, 'set fmri(alternateReference_yn) 0',
-                                     'set fmri(alternateReference_yn) 1')
-                        replace_word(new_file, 'set fmri(confoundevs) 0', "set fmri(confoundevs) 0\n\n# Session's alternate reference image for analysis 1 \nset alt_ex_func(1) \"" +
-                                     directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz\"')
-                        #not finished
-                Label(master, text='finished: ' + key).grid(row=7, column=1)
-                master.update()
-
-
-def run_ses_1():
-    for (key, value) in selection_list.items():
-        if value == 1:
-            i = 0
-            if os.path.exists(directory+key+'/func/'+key+analysisname+'_s'+str(i+1)+'.feat') or os.path.exists(directory+key+'/func/'+key+analysisname+'_s'+str(i+1)+'.gfeat'):
-                results = tkMessageBox.askquestion(
-                    "Same", "Analysis"+key+analysisname+" exists, do it again?", icon='warning')
-                if results == 'no':
-                    break
-            fsf_file = directory+'/../logs/feat/' + \
-                key+'_s'+str(i+1)+analysisname+'.fsf'
-            if not os.path.exists(fsf_file):
-                tkMessageBox.showerror("error", "fsf file for "+key+'_s' +
-                                       str(i+1)+analysisname+' doesn\'t exist')
-
-            cmdline = "echo " + "\"feat " + fsf_file + "\" > " + \
-                log_directory+"/"+key+'_s'+str(i+1)+analysisname+".sh"
-            Label(master, text=key + ': wrtie to sh file').grid(row=8, column=1)
-            master.update()
-            output = subprocess.check_output(cmdline, shell=True)
-            print(output)
-            Label(master, text=key +
-                  ': begin to submit to cluster').grid(row=8, column=1)
-            master.update()
-            master.update()
-            cmdline = "qsub -N \'feat_" + key + "\' -l \'procs=1,mem=12gb,walltime=22:00:00' " + \
-                log_directory+"/"+key+'_s'+str(i+1)+analysisname+".sh"
-            output = subprocess.check_output(cmdline, shell=True)
-            print(output)
-            Label(master, text=key +
-                  ': finished the submission to cluster').grid(row=8, column=1)
-            master.update()
-
-
-def run_ses_else():
-
-    log_directory = tkFileDialog.askdirectory(
-        title="Select a Log Directory", initialdir=directory+'/../logs/feat')
-    for (key, value) in selection_list.items():
-        if value == 1:
-            if not os.path.exists(directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz'):
-                tkMessageBox.showerror(
-                    "error", "example_fun.nii.gz not exist yet, wait ses 1 run")
-                break
-            for i in range(1, sesnum):
-                if os.path.exists(directory+key+'/func/'+key+analysisname+'_s'+str(i+1)+'.feat') or os.path.exists(directory+key+'/func/'+key+analysisname+'_s'+str(i+1)+'.gfeat'):
-                    results = tkMessageBox.askquestion(
-                        "Same", "Analysis"+key+analysisname+" exists, do it again?", icon='warning')
-                    if results == 'no':
-                        break
-                fsf_file = directory+'/../logs/feat/' + \
-                    key+'_s'+str(i+1)+analysisname+'.fsf'
-                if not os.path.exists(fsf_file):
-                    tkMessageBox.showerror("error", "fsf file for "+key+'_s' +
-                                           str(i+1)+analysisname+' doesn\'t exist')
-
-                cmdline = "echo " + "\"feat " + fsf_file + "\" > " + \
-                    log_directory+"/"+key+'_s'+str(i+1)+analysisname+".sh"
-                Label(master, text=key + ': wrtie to sh file').grid(row=9, column=1)
-                master.update()
-                output = subprocess.check_output(cmdline, shell=True)
-                print(output)
-                Label(master, text=key +
-                      ': begin to submit to cluster').grid(row=9, column=1)
-                master.update()
-                master.update()
-                cmdline = "qsub -N \'feat_" + key + "\' -l \'procs=1,mem=12gb,walltime=22:00:00' " + \
-                    log_directory+"/"+key+'_s'+str(i+1)+analysisname+".sh"
-                output = subprocess.check_output(cmdline, shell=True)
-                print(output)
-                Label(master, text=key +
-                      ': finished the submission to cluster').grid(row=9, column=1)
-                master.update()
-
-
 def run_fsf():
-    if not os.path.exists(directory+'/../logs/feat'):
-        os.makedirs(directory+'/../logs/feat')
-    log_directory = tkFileDialog.askdirectory(
-        title="Select a Log Directory", initialdir=directory+'/../logs/feat')
     fsf_files = tkFileDialog.askopenfilenames(
-        title='FSF files', initialdir=directory+'/../logs/feat', filetypes=[("fsf files", "*.fsf")])
+        title='FSF files', initialdir=log_directory+'/feat', filetypes=[("fsf files", "*.fsf")])
     for fsf_file in fsf_files:
         cmdline = "echo " + "\"feat " + fsf_file + "\" > " + \
             log_directory+"/"+os.path.basename(fsf_file)+".sh"
@@ -328,10 +180,15 @@ class Input_values:
         top = self.top = Toplevel(parent)
         Label(top, text="Condition Names (e.g.'cond1,cond2,cond3'):").grid(
             row=0, sticky=W)
+        Button(top, text='...', command=self.more).grid(
+            row=0, column=2, sticky=W)
 
         self.Text_Entry1 = Entry(top)
-        self.Text_Entry1.insert(END,default_cond)
+        # self.Text_Entry1.insert(END,default_cond)
         self.Text_Entry1.grid(row=0, column=1)
+        if os.path.exists('./default_cond.txt'):
+            cond_name_txt = open('./default_cond.txt', 'r').read().replace('\n','')
+            self.Text_Entry1.insert(END, cond_name_txt)
 
         Label(top, text="Sesisson Num (e.g.'1,2,3,4'):").grid(row=1, sticky=W)
         self.Text_Entry2 = Entry(top)
@@ -343,16 +200,20 @@ class Input_values:
 
         self.var2 = IntVar()
         Checkbutton(top, text="Use Alter data ",
-                    variable=self.var2).grid(row=3, sticky=W)
+                    variable=self.var2).grid(row=4, sticky=W)
 
         self.var3 = IntVar()
         Checkbutton(top, text="Use Alter data (except Session 1)",
-                    variable=self.var3).grid(row=4, sticky=W)
+                    variable=self.var3).grid(row=5, sticky=W)
+
+        self.var4 = IntVar()
+        Checkbutton(top, text="PRF (ignore condi settings)",
+                    variable=self.var4).grid(row=6, sticky=W)
 
         Button(top, text='Okay', command=self.ok).grid(
-            row=5,      column=0, sticky=W)
+            row=7,      column=0, sticky=W)
         Button(top, text='Move current .feat file to old',
-               command=self.move).grid(row=5,      column=2, sticky=W)
+               command=self.move).grid(row=7,      column=2, sticky=W)
 
     def move(self):
         from shutil import move
@@ -362,7 +223,6 @@ class Input_values:
         print text_from_Box2
         text_from_Box3 = self.Text_Entry3.get()
         print text_from_Box3
-        EV_condis = [x for x in text_from_Box1.split(",")]
         EV_sessions = [x for x in text_from_Box2.split(",")]
         EV_subject = text_from_Box3
         if not os.path.exists(directory+'/'+EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())):
@@ -372,8 +232,14 @@ class Input_values:
             move(directory+'/'+EV_subject+'/func/'+EV_subject+analysisname+'_s'+EV_sess+'.feat', directory+'/' +
                  EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())+'/'+EV_subject+analysisname+'_s'+EV_sess+'.feat')
 
-    def ok(self):
+    def more(self):
+        cond_name = tkFileDialog.askopenfilenames(
+            title='Condition Names', initialdir='./', filetypes=[("txt files", "*.txt")])
+        cond_name_txt = open(cond_name[0], 'r').read().replace('\n','')
+        self.Text_Entry1.delete(0, END)
+        self.Text_Entry1.insert(0, cond_name_txt)
 
+    def ok(self):
         text_from_Box1 = self.Text_Entry1.get()
         print text_from_Box1
         text_from_Box2 = self.Text_Entry2.get()
@@ -383,51 +249,80 @@ class Input_values:
 
         EV_condis = [x for x in text_from_Box1.split(",")]
         EV_sessions = [x for x in text_from_Box2.split(",")]
+        new_EV_sessions = []
+        for EV_ses in EV_sessions:
+            if '-' in EV_ses:
+                new_EV = [x for x in EV_ses.split("-")]
+                numbegin = int(new_EV[0])
+                numend = int(new_EV[1])
+                new_ses = range(numbegin, numend+1)
+                for x in new_ses:
+                    new_EV_sessions.append(str(x))
+            else:
+                new_EV_sessions.append(EV_ses)
+        print new_EV_sessions
+
         EV_subject = text_from_Box3
+      
         EV_alter = self.var2.get()
         EV_alter2 = self.var3.get()
+        IS_PRF = self.var4.get()
+
 
         print 'EV_alter:'+str(EV_alter)
         print 'EV_alter2:'+str(EV_alter2)
-        for EV_sess in EV_sessions:
-            EV1, EV2, header, footer, al = EV_replace_value(
-                directory, EV_subject, EV_sess)
-            EV_conds = ''
-            fsf_full = ''
-            header = header.replace('EV_TOTAL', str(len(EV_condis)))
-            header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
-            header = header.replace('_task_hp128_fwhm0', analysisname)
-            for i in range(0, len(EV_condis)):
-                EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
-                EV_cond = EV_cond.replace('NUM_X', str(i+1))
+        for EV_sess in new_EV_sessions:
+            if not IS_PRF:
+                EV1, EV2, header, footer, al = EV_replace_value(
+                    directory, EV_subject, EV_sess)
+                EV_conds = ''
+                fsf_full = ''
+                header = header.replace('EV_TOTAL', str(len(EV_condis)))
+                header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
+                header = header.replace('_task_hp128_fwhm0', analysisname)
+                for i in range(0, len(EV_condis)):
+                    EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
+                    EV_cond = EV_cond.replace('NUM_X', str(i+1))
 
-                for j in range(0, len(EV_condis)+1):
-                    EV_2 = EV2
-                    EV_2 = EV_2.replace('NUM_X', str(i+1))
-                    EV_2 = EV_2.replace('NUM_Y', str(j))
-                    EV_cond = EV_cond + EV_2
-                EV_conds = EV_conds + EV_cond
-            if EV_alter:
-                header = header.replace('ALTER_X', '1')
-                fsf_full = fsf_full + header
-                fsf_full = fsf_full + al
-            else:
-                if EV_alter2:
-                    if EV_sess == '1':
+                    for j in range(0, len(EV_condis)+1):
+                        EV_2 = EV2
+                        EV_2 = EV_2.replace('NUM_X', str(i+1))
+                        EV_2 = EV_2.replace('NUM_Y', str(j))
+                        EV_cond = EV_cond + EV_2
+                    EV_conds = EV_conds + EV_cond
+                if EV_alter:
+                    header = header.replace('ALTER_X', '1')
+                    fsf_full = fsf_full + header
+                    fsf_full = fsf_full + al
+                else:
+                    if EV_alter2:
+                        if EV_sess == '1':
+                            header = header.replace('ALTER_X', '0')
+                            fsf_full = fsf_full + header
+                        else:
+                            header = header.replace('ALTER_X', '1')
+                            fsf_full = fsf_full + header
+                            fsf_full = fsf_full + al
+                    else:
                         header = header.replace('ALTER_X', '0')
                         fsf_full = fsf_full + header
-                    else:
-                        header = header.replace('ALTER_X', '1')
-                        fsf_full = fsf_full + header
-                        fsf_full = fsf_full + al
-                else:
-                    header = header.replace('ALTER_X', '0')
-                    fsf_full = fsf_full + header
 
-            fsf_full = fsf_full + EV_conds
-            fsf_full = fsf_full + footer
+                fsf_full = fsf_full + EV_conds
+                fsf_full = fsf_full + footer
+                new_file = log_directory+'/feat/'+EV_subject+'_s'+EV_sess+analysisname+'.fsf'
+            else:
+                prf_fsf = open('./prf','r').read()
+                prf_fsf = prf_fsf.replace('DIRECTORY-X',directory)
+                prf_fsf = prf_fsf.replace('SUB_X',EV_subject)
+                prf_fsf = prf_fsf.replace('SESSIONX',EV_sess)
+                
+                EV1, EV2, header, footer, al = EV_replace_value(directory, EV_subject, EV_sess)
+                prf_fsf = prf_fsf.replace('ALERT_BLOCK',al)
 
-            new_file = directory+'/../logs/feat/'+EV_subject+'_s'+EV_sess+analysisname+'.fsf'
+                fsf_full = prf_fsf
+                new_file = log_directory+'/feat/'+EV_subject+'_PRF-'+EV_sess+'.fsf'
+
+            
             text_file = open(new_file, "w")
             text_file.write(fsf_full)
             text_file.close()
@@ -440,7 +335,7 @@ class Input_values:
     # SESSIONX
 
 
-def EV_replace_value(directory, SUB_X, SESSIONX):
+def EV_replace_value(directory, SUB_X,  SESSIONX):
     header = open('./header', 'r').read()
     footer = open('./footer', 'r').read()
     al = alter_content[:]
@@ -459,6 +354,7 @@ def EV_replace_value(directory, SUB_X, SESSIONX):
     EV2 = EV2.replace('SESSIONX', SESSIONX)
 
     header = header.replace('SUB-X', SUB_X)
+
     footer = footer.replace('SUB-X', SUB_X)
     al = al.replace('SUB-X', SUB_X)
     EV1 = EV1.replace('SUB-X', SUB_X)
@@ -497,31 +393,6 @@ class MyDialog:
         self.top.destroy()
 
 
-def generlaize_fsf():
-    if not os.path.exists(directory+'/../logs/feat'):
-        os.makedirs(directory+'/../logs/feat')
-    log_directory = tkFileDialog.askdirectory(
-        title="Where to save", initialdir=directory+'/../logs/feat')
-    fsf_file = tkFileDialog.askopenfilename(
-        title='FSF files', initialdir=directory+'/../logs/feat', filetypes=[("fsf files", "*.fsf")])
-
-    d = MyDialog(master)
-    master.wait_window(d.top)
-
-    for to_num in to_numbers:
-        new_file = fsf_file.replace('_s'+str(from_number), '_s'+str(to_num))
-        if not os.path.exists(new_file):
-            copy2(fsf_file, new_file)
-        else:
-            results = tkMessageBox.askquestion("Same", os.path.basename(
-                new_file)+" exists, rewrite it?", icon='warning')
-            if results == 'no':
-                break
-            else:
-                copy2(fsf_file, new_file)
-        replace_word(new_file, '_s'+str(from_number), '_s'+str(to_num))
-
-
 from time import gmtime, strftime
 
 
@@ -530,11 +401,9 @@ def reg_T1():
         if value == 1:
             if not os.path.exists(directory+"/"+key+"/masks"):
                 os.makedirs(directory+"/"+key+"/masks")
-    log_directory = tkFileDialog.askdirectory(
-        title="Select a Log Directory for registeration", initialdir=directory+'/../logs/reg')
     reg_time = strftime("%Y-%m-%d-%H-%M", gmtime())
     new_file = log_directory + '/''freesurfer2T1'+reg_time+'.sh'
-    copy2(directory+'/../scripts/preprocessing/localizer/register_freesurfer_V1_to_T1.sh', new_file)
+    copy2('./register_freesurfer_V1_to_T1.sh', new_file)
     replace_word(new_file, "/project/3018012.17/${PROJECT}", directory+'/..')
     Label(master, text='wrtie to sh file').grid(row=11, column=1)
     master.update()
@@ -551,10 +420,9 @@ def reg_T1():
 def reg_func():
     for (key, value) in selection_list.items():
         if value == 1:
-            for i in range(sesnum):
+            for i in range(500):
                 if not os.path.exists(directory+"/"+key+"/func/"+key+analysisname+'_s'+str(i+1)+'.feat'):
-                    tkMessageBox.showerror("error", "feat "+key+analysisname +
-                                           '_s'+str(i+1)+"not complete!")
+                    tkMessageBox.showinfo("Info", "Performed for session 1 to"+str(i)+"!")
                     break
                 cmdline = 'flirt -in ${subj_id}_V1.nii.gz -applyxfm -init ../func/localizer_hp128_fwhm5.feat/reg/highres2example_func.mat -out ${subj_id}_V1_example_func.nii.gz -paddingsize 0.0 -interp nearestneighbour -ref ../func/localizer_hp128_fwhm5.feat/reg/example_func.nii.gz'
                 cmdline = cmdline.replace(
@@ -579,81 +447,6 @@ def reg_func():
                 master.update()
 
 
-def create_GLM_prf():
-    for (key, value) in selection_list.items():
-        if value == 1:
-            for i in range(prfnum):
-                new_file = directory+'/../logs/feat/'+key+'_'+prfname[i]+'.fsf'
-                if not os.path.exists(new_file):
-                    copy2(directory+'/../logs/feat/' +
-                          prf_template_filename, new_file)
-                else:
-                    results = tkMessageBox.askquestion(
-                        "Same", "Analysis "+key+prfname[i]+" fsf file exists, do it again?", icon='warning')
-                    if results == 'no':
-                        break
-                    else:
-                        copy2(directory+'/../logs/feat/' +
-                              prf_template_filename, new_file)
-
-                prf_template_project_dir.replace('sub-x',key)
-                replace_word(new_file, prf_template_project_dir, directory)
-                replace_word(new_file, "set fmri(outputdir) \""+prf_template_output_dir +
-                             "\"", "set fmri(outputdir) \""+directory+"/"+key+"/func/"+prfname[i]+"\"")
-                new_4dfile = prf_template_4dfile.replace(
-                    prf_template_sesname, prfname[i])
-                replace_word(new_file, prf_template_4dfile, new_4dfile)
-                replace_word(new_file, prf_template_subjname, key)
-
-
-#                 if i>0:
-#                     replace_word(new_file,'set fmri(alternateReference_yn) 0','set fmri(alternateReference_yn) 1')
-#                     replace_word(new_file,'set fmri(confoundevs) 0', "set fmri(confoundevs) 0\n\n# Session's alternate reference image for analysis 1 \nset alt_ex_func(1) \""+directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz\"')
-                #not finished
-            Label(master, text='finished: ' + key).grid(row=14, column=1)
-            master.update()
-
-
-def run_pRF():
-    log_directory = tkFileDialog.askdirectory(
-        title="Select a Log Directory", initialdir=directory+'/../logs/')
-    for (key, value) in selection_list.items():
-        if value == 1:
-            if not os.path.exists(directory+"/"+key+"/func/"+key+analysisname+'_s1.feat/example_func.nii.gz'):
-                tkMessageBox.showerror(
-                    "error", "example_fun.nii.gz not exist yet, wait ses 1 run")
-                break
-            for i in range(0, sesnum):
-                if os.path.exists(directory+key+'/func/'+key+"_"+prfname[i]+'.feat'):
-                    results = tkMessageBox.askquestion(
-                        "Same", "Analysis"+prfname[i]+" exists, do it again?", icon='warning')
-                    if results == 'no':
-                        break
-                fsf_file = log_directory+'/feat/'+key+"_"+prfname[i]+'.fsf'
-                if not os.path.exists(fsf_file):
-                    tkMessageBox.showerror(
-                        "error", "fsf file for "+prfname[i]+' doesn\'t exist')
-
-                cmdline = "echo " + "\"feat " + fsf_file + "\" > " + \
-                    log_directory+"/"+key+"_"+prfname[i]+".sh"
-                Label(master, text=key +
-                      ': wrtie to sh file').grid(row=15, column=1)
-                master.update()
-                output = subprocess.check_output(cmdline, shell=True)
-                print(output)
-                Label(master, text=key +
-                      ': begin to submit to cluster').grid(row=15, column=1)
-                master.update()
-                master.update()
-                cmdline = "qsub -N \'feat_" + key + "\' -l \'procs=1,mem=12gb,walltime=22:00:00' " + \
-                    log_directory+"/"+key+"_"+prfname[i]+".sh"
-                output = subprocess.check_output(cmdline, shell=True)
-                print(output)
-                Label(master, text=key +
-                      ': finished the submission to cluster').grid(row=15, column=1)
-                master.update()
-
-
 Label(master, text='Selected sub:' +
       ', '.join({key for (key, value) in selection_list.items() if value == 1})).grid(row=0, column=0)
 
@@ -666,31 +459,17 @@ Button(master, text='brain extraction (BET)', command=brain_extraction).grid(
 Button(master, text='Freesurfer (on cluster)', command=run_freesurfer).grid(
     row=5, column=0, sticky=W, pady=0)
 ttk.Separator(master, orient=HORIZONTAL).grid(row=6, column=0, sticky="ew")
-Button(master, text='Create GLM file', command=create_GLM).grid(
-    row=7, column=0, sticky=W, pady=0)
-Button(master, text='Run Sesion 1 (on cluster)', command=run_ses_1).grid(
-    row=8, column=0, sticky=W, pady=0)
-Button(master, text='Run Other Sesions ', command=run_ses_else).grid(
-    row=9, column=0, sticky=W, pady=0)
-ttk.Separator(master, orient=HORIZONTAL).grid(row=10, column=0, sticky="ew")
 Button(master, text='V1 and V2 ==> T1', command=reg_T1).grid(
-    row=11, column=0, sticky=W, pady=0)
+    row=7, column=0, sticky=W, pady=0)
 Button(master, text='V1 and V2 ==> function', command=reg_func).grid(
-    row=12, column=0, sticky=W, pady=0)
+    row=8, column=0, sticky=W, pady=0)
 
-ttk.Separator(master, orient=HORIZONTAL).grid(row=13, column=0, sticky="ew")
-Button(master, text='Create GLM file: PRF', command=create_GLM_prf).grid(
-    row=14, column=0, sticky=W, pady=0)
-Button(master, text='Run pRF pre-processing',
-       command=run_pRF).grid(row=15, column=0, sticky=W, pady=0)
-
-ttk.Separator(master, orient=HORIZONTAL).grid(row=16, column=0, sticky="ew")
+ttk.Separator(master, orient=HORIZONTAL).grid(row=9, column=0, sticky="ew")
 Button(master, text='Run FSF in cluster', command=run_fsf).grid(
-    row=17, column=0, sticky=W, pady=0)
-Button(master, text='Generalize FSF file', command=generlaize_fsf).grid(
-    row=18, column=0, sticky=W, pady=0)
+    row=10, column=0, sticky=W, pady=0)
+
 Button(master, text='Create EV file to FSF', command=create_EV).grid(
-    row=19, column=0, sticky=W, pady=0)
+    row=11, column=0, sticky=W, pady=0)
 
 #ttk.Separator(master,orient = HORIZONTAL).grid(row=6,column=0,sticky="ew")
 mainloop()

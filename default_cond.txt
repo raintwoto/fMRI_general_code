@@ -1,0 +1,1 @@
+hom,rnd,str,break,nobreak,pop1,pop2,pop3,pop4

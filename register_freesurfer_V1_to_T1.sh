@@ -6,7 +6,7 @@
 
 PROJECT="fMRI_EXAMPLE_PROJECT/PROJECT1"
 
-project_path="/project/3018035.03/fMRI/Popout/data/.."
+project_path="/project/3018012.17/${PROJECT}"
 subject_list="${project_path}/scripts/subjects.txt"
 log_path="${project_path}/logs/freesurfer"
 # --------------------------------------------------------------------------- #
@@ -26,7 +26,7 @@ for subj_id in ${SUBJECTS[@]} ; do
 		echo ">> running tkregister for subject $subj_id (Freesurfer -> T1)"
 
 		SUBJ_DIR="${project_path}/data/${subj_id}"
-		ANAT="${project_path}/data/${subj_id}/anat/${subj_id}_anat.nii.gz"
+		ANAT="${project_path}/data/${subj_id}/anat/${subj_id}_T1w.nii.gz"
 		export SUBJECTS_DIR=""
 		export SUBJECTS_DIR=${SUBJ_DIR}
 

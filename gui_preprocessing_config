@@ -1,25 +1,10 @@
 analysisname = '_task_hp128_fwhm0'
+
 #analysisname = '_localizer_hp128_fwhm0'
 condi = ['up_up','up_down','down_down','down_up']
 template_condi = ['down_left','up_left','down_right','up_right']
 initialdir = '/home/predatt/biahan/Project2/fMRI/Popout/data'
 
-template_other = ['d_l','u_l','d_r','u_r']
-new_other = ['up_up','up_down','down_down','down_up']
-
-template_filename = 'sub-1_s1.fsf'
-template_sesname ='task-1'
-sesnum = 4
-sesname = ['task-1','task-2','task-3','task-4']
-
-
-prf_template_filename = 'sub-1_prf.fsf'
-prf_template_sesname ='pRF-1'
-prfnum = 4
-prfname = ['pRF-1','pRF-2','pRF-3','pRF-4']
-prf_template_project_dir='/project/3018035.03/fMRI/Popout/data/sub-x/func'
-
-default_cond = 'hom,rnd,str,break,nobreak,pop1,pop2,pop3,pop4'
 alter_content='''
 # Session's alternate reference image for analysis 1 
 set alt_ex_func(1) "DIRECTORY-X/SUB-X/func/SUB-X_task_hp128_fwhm0_s1.feat/example_func.nii.gz"
