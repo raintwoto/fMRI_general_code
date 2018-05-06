@@ -106,7 +106,7 @@ set fmri(st_file) ""
 set fmri(bet_yn) 1
 
 # Spatial smoothing FWHM (mm)
-set fmri(smooth) 0.0
+set fmri(smooth) FMRI_FWHM_SIZE
 
 # Intensity normalization
 set fmri(norm_yn) 0
@@ -152,8 +152,8 @@ set fmri(evs_real) EV_2TOTAL
 set fmri(evs_vox) 0
 
 # Number of contrasts
-set fmri(ncon_orig) 1
-set fmri(ncon_real) 1
+set fmri(ncon_orig) CONTRAST_NUM
+set fmri(ncon_real) CONTRAST_NUM
 
 # Number of F-tests
 set fmri(nftests_orig) 0

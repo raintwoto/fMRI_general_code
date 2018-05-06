@@ -27,6 +27,7 @@ f1 = open('./gui_preprocessing_config', 'r').read()
 exec(f1)
 
 
+
 master = Tk()
 directory = tkFileDialog.askdirectory(
     title="Select data Directory", initialdir=initialdir)
@@ -179,47 +180,106 @@ def create_EV():
 class Input_values:
     def __init__(self, parent):
         top = self.top = Toplevel(parent)
-        Label(top, text="Condition Names (e.g.'cond1,cond2,cond3'):").grid(
-            row=0, sticky=W)
-        Button(top, text='...', command=self.more).grid(
-            row=0, column=2, sticky=W)
+        # Label(top, text="Condition Names (e.g.'cond1,cond2,cond3'):").grid(
+        #     row=0, sticky=W)
+        # Button(top, text='...', command=self.more).grid(
+        #     row=0, column=2, sticky=W)
 
-        self.Text_Entry1 = Entry(top)
-        # self.Text_Entry1.insert(END,default_cond)
-        self.Text_Entry1.grid(row=0, column=1)
-        if os.path.exists('./default_cond.txt'):
-            cond_name_txt = open('./default_cond.txt', 'r').read().replace('\n','')
-            self.Text_Entry1.insert(END, cond_name_txt)
+        # self.Text_Entry1 = Entry(top)
+        # # self.Text_Entry1.insert(END,default_cond)
+        # self.Text_Entry1.grid(row=0, column=1)
+        # if os.path.exists('./default_cond.txt'):
+        #     cond_name_txt = open('./default_cond.txt', 'r').read().replace('\n','')
+        #     self.Text_Entry1.insert(END, cond_name_txt)
+        Label(top, text="Sub Name (e.g.'sub-15'):").grid(row=0, sticky=W)
+        self.Text_Entry3 = Entry(top)
+        self.Text_Entry3.grid(row=0, column=1,sticky=W)
 
         Label(top, text="Sesisson Num (e.g.'1,2,3,4'):").grid(row=1, sticky=W)
         self.Text_Entry2 = Entry(top)
-        self.Text_Entry2.grid(row=1, column=1)
+        self.Text_Entry2.grid(row=1, column=1,sticky=W)
 
-        Label(top, text="Sub Name (e.g.'sub-15'):").grid(row=2, sticky=W)
-        self.Text_Entry3 = Entry(top)
-        self.Text_Entry3.grid(row=2, column=1)
+        
 
         self.var2 = IntVar()
         Checkbutton(top, text="Use Alter data ",
-                    variable=self.var2).grid(row=4, sticky=W)
+                    variable=self.var2).grid(row=2, column=0,sticky=W)
 
         self.var3 = IntVar()
         Checkbutton(top, text="Use Alter data (except Session 1)",
-                    variable=self.var3).grid(row=5, sticky=W)
+                    variable=self.var3).grid(row=3, column=0,sticky=W)
+        number =4
+        global real_dict
 
-        self.var4 = IntVar()
-        Checkbutton(top, text="PRF (ignore condi settings)",
-                    variable=self.var4).grid(row=6, sticky=W)
+        real_dict = {}
+        self.variable={}
+        for keyname in para_dict.keys():
+            if type(para_dict[keyname]) is str:
+                real_dict[keyname]= para_dict[keyname]
+            elif type(para_dict[keyname]) is list:
+                Label(top, text=keyname).grid(row=number, sticky=W)
+                self.variable[keyname] = StringVar()
+                self.variable[keyname].set(para_dict[keyname][0]) # default value                
+                w = apply(OptionMenu, (top, self.variable[keyname]) + tuple(para_dict[keyname])).grid(row=number, column=1,sticky=W)
+                number = number+1
+            else:
+                raise NameError('Parameters Incorrect')        
+
+        ttk.Separator(top, orient=HORIZONTAL).grid(row=number+1, column=0, sticky="ew")
+        ttk.Separator(top, orient=HORIZONTAL).grid(row=number+1, column=1, sticky="ew")
+
+
+
+        Label(top, text="Contrast file:").grid(
+             row=number+2, sticky=W)
+        self.Text_Entry1 = Entry(top)
+        self.Text_Entry1.insert(END,'NONE')
+        self.Text_Entry1.grid(row=number+2, column=1,sticky=W)
+        Button(top, text='...', command=self.more).grid(
+             row=number+3, column=0, sticky=W)
+        Button(top, text='NEW', command=self.new_contrast).grid(
+             row=number+3, column=1, sticky=W)
+        ttk.Separator(top, orient=HORIZONTAL).grid(row=number+4, column=0, sticky="ew")
+        ttk.Separator(top, orient=HORIZONTAL).grid(row=number+4, column=1, sticky="ew")
+
+
 
         Button(top, text='Okay', command=self.ok).grid(
-            row=7,      column=0, sticky=W)
+            row=number+5,      column=1, sticky=E)
         Button(top, text='Move current .feat file to old',
-               command=self.move).grid(row=7,      column=2, sticky=W)
+               command=self.move).grid(row=number+6,      column=1, sticky=E)
+
+
+    def new_contrast(self):
+        text_from_Box1 = self.variable['CONDNAME'].get()
+        EV_condis = [x for x in text_from_Box1.split(",")]
+        text = '# Leave unwanted contrast as 0\n #            '
+        for EV_cond in EV_condis:
+            text = text + EV_cond
+            text = text + '\t'
+        text = text + '\ncontrast = { \n'
+        num=1
+        for EV_cond in EV_condis:
+            text = text + '\'NAME' + str(num)+'\':[\t'
+            for EV_cond in EV_condis:
+                text = text + '0,\t'
+            text = text+'],\n'
+            num = num+1
+        text = text + '}'
+        contrast_name = tkFileDialog.asksaveasfilename(
+            title='Save new contrast to:', initialdir='./', filetypes=[("txt files", "*.txt")])
+        #abs_path = os.path.abspath(contrast_name.name)
+        open(contrast_name, 'w').write(text)
+        self.Text_Entry1.delete(0, END)
+        self.Text_Entry1.insert(0, contrast_name)
+        tkMessageBox.showinfo("Info", "Now edit and save the new contrast file!")
+
+
+
+
 
     def move(self):
-        from shutil import move
-        text_from_Box1 = self.Text_Entry1.get()
-        print text_from_Box1
+        from shutil import move      
         text_from_Box2 = self.Text_Entry2.get()
         print text_from_Box2
         text_from_Box3 = self.Text_Entry3.get()
@@ -234,14 +294,20 @@ class Input_values:
                  EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())+'/'+EV_subject+analysisname+'_s'+EV_sess+'.feat')
 
     def more(self):
-        cond_name = tkFileDialog.askopenfilenames(
-            title='Condition Names', initialdir='./', filetypes=[("txt files", "*.txt")])
-        cond_name_txt = open(cond_name[0], 'r').read().replace('\n','')
+        contrast_name = tkFileDialog.askopenfilenames(
+            title='Contrast file', initialdir='./', filetypes=[("txt files", "*.txt")])        
         self.Text_Entry1.delete(0, END)
-        self.Text_Entry1.insert(0, cond_name_txt)
+        self.Text_Entry1.insert(0, contrast_name[0])
+
+    
 
     def ok(self):
-        text_from_Box1 = self.Text_Entry1.get()
+        global real_dict
+        for keyname in para_dict.keys():
+            if type(para_dict[keyname]) is list:
+                real_dict[keyname] = self.variable[keyname].get()
+        
+        text_from_Box1 = self.variable['CONDNAME'].get()
         print text_from_Box1
         text_from_Box2 = self.Text_Entry2.get()
         print text_from_Box2
@@ -267,61 +333,81 @@ class Input_values:
       
         EV_alter = self.var2.get()
         EV_alter2 = self.var3.get()
-        IS_PRF = self.var4.get()
+
 
 
         print 'EV_alter:'+str(EV_alter)
         print 'EV_alter2:'+str(EV_alter2)
         for EV_sess in new_EV_sessions:
-            if not IS_PRF:
-                EV1, EV2, header, footer, al = EV_replace_value(
-                    directory, EV_subject, EV_sess)
-                EV_conds = ''
-                fsf_full = ''
-                header = header.replace('EV_TOTAL', str(len(EV_condis)))
-                header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
-                header = header.replace('_task_hp128_fwhm0', analysisname)
-                for i in range(0, len(EV_condis)):
-                    EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
-                    EV_cond = EV_cond.replace('NUM_X', str(i+1))
+            imgshape = nib.load(directory+'/'+EV_subject+'/func/'+EV_subject+'_'+real_dict['TASKNAME']+'-'+EV_sess+'_bold.nii.gz').shape
+            contrast_filename = self.Text_Entry1.get()
 
-                    for j in range(0, len(EV_condis)+1):
-                        EV_2 = EV2
-                        EV_2 = EV_2.replace('NUM_X', str(i+1))
-                        EV_2 = EV_2.replace('NUM_Y', str(j))
-                        EV_cond = EV_cond + EV_2
-                    EV_conds = EV_conds + EV_cond
-                if EV_alter:
-                    header = header.replace('ALTER_X', '1')
-                    fsf_full = fsf_full + header
-                    fsf_full = fsf_full + al
-                else:
-                    if EV_alter2:
-                        if EV_sess == '1':
-                            header = header.replace('ALTER_X', '0')
-                            fsf_full = fsf_full + header
-                        else:
-                            header = header.replace('ALTER_X', '1')
-                            fsf_full = fsf_full + header
-                            fsf_full = fsf_full + al
-                    else:
+            real_dict['FMRI_VOLUMES'] = str(imgshape[3])
+            real_dict['FMRI_TOTOALVOXELS'] = str(imgshape[0]*imgshape[1]*imgshape[2]*imgshape[3])
+
+            if contrast_filename == 'NONE':
+                real_dict['CONTRAST_NUM'] = str(1)
+            else:
+                file_in_contrast = open(contrast_filename,'r').read()
+                exec(file_in_contrast)
+                num = 0
+                for keyname in contrast.keys():
+                    if not all(x==0 for x in contrast[keyname]):
+                        num = num + 1
+                real_dict['CONTRAST_NUM'] = str(num)
+
+
+            EV1, EV2, header, footer, al = EV_replace_value(
+                directory, EV_subject, EV_sess)
+            EV_conds = ''
+            fsf_full = ''
+            header = header.replace('EV_TOTAL', str(len(EV_condis)))
+            header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
+
+            for keyname in real_dict.keys():
+                header = header.replace(keyname, real_dict[keyname])
+
+
+            for i in range(0, len(EV_condis)):
+                EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
+                EV_cond = EV_cond.replace('NUM_X', str(i+1))
+
+                for j in range(0, len(EV_condis)+1):
+                    EV_2 = EV2
+                    EV_2 = EV_2.replace('NUM_X', str(i+1))
+                    EV_2 = EV_2.replace('NUM_Y', str(j))
+                    EV_cond = EV_cond + EV_2
+                EV_conds = EV_conds + EV_cond
+            if EV_alter:
+                header = header.replace('ALTER_X', '1')
+                fsf_full = fsf_full + header
+                fsf_full = fsf_full + al
+            else:
+                if EV_alter2:
+                    if EV_sess == '1':
                         header = header.replace('ALTER_X', '0')
                         fsf_full = fsf_full + header
+                    else:
+                        header = header.replace('ALTER_X', '1')
+                        fsf_full = fsf_full + header
+                        fsf_full = fsf_full + al
+                else:
+                    header = header.replace('ALTER_X', '0')
+                    fsf_full = fsf_full + header
 
-                fsf_full = fsf_full + EV_conds
+            
+            fsf_full = fsf_full + EV_conds
+            
+            if contrast_filename == 'NONE':
                 fsf_full = fsf_full + footer
-                new_file = log_directory+'/feat/'+EV_subject+'_s'+EV_sess+analysisname+'.fsf'
             else:
-                prf_fsf = open('./prf','r').read()
-                prf_fsf = prf_fsf.replace('DIRECTORY-X',directory)
-                prf_fsf = prf_fsf.replace('SUB_X',EV_subject)
-                prf_fsf = prf_fsf.replace('SESSIONX',EV_sess)
-                
-                EV1, EV2, header, footer, al = EV_replace_value(directory, EV_subject, EV_sess)
-                prf_fsf = prf_fsf.replace('ALERT_BLOCK',al)
+                new_footer = create_footer(contrast_filename)
+                fsf_full = fsf_full + new_footer
 
-                fsf_full = prf_fsf
-                new_file = log_directory+'/feat/'+EV_subject+'_PRF-'+EV_sess+'.fsf'
+
+
+            new_file = log_directory+'/feat/'+EV_subject+'_s'+EV_sess+'_'+real_dict['TASKNAME']+'_'+real_dict['ANALYSISNAME']+'.fsf'
+      
 
             
             text_file = open(new_file, "w")
@@ -334,6 +420,43 @@ class Input_values:
     # DIRECTORY-X
     # SUB-X
     # SESSIONX
+def create_footer(contrast_filename):
+    file_in_contrast = open(contrast_filename,'r').read()
+    exec(file_in_contrast)
+    text = '# Contrast & F-tests mode\n# real : control real EVs\n# orig : control original EVs\nset fmri(con_mode_old) orig\nset fmri(con_mode) orig\n'
+    num = 1
+    for keyname in contrast.keys():
+        if not all(x==0 for x in contrast[keyname]):
+            text = text + '# Display images for contrast_real %s\nset fmri(conpic_real.%s) 1\n\n'%(str(num),str(num))
+            text = text + '# Title for contrast_real %s\nset fmri(conname_real.%s) \"%s\"\n\n'%(str(num),str(num),keyname)
+            cond_num =1
+            for x in contrast[keyname]:
+                text = text +'# Real contrast_real vector %s element %s\nset fmri(con_real%s.%s) %s\n\n# Real contrast_real vector %s element %s\
+                                \nset fmri(con_real%s.%s) 0\n\n'%(str(num), str(cond_num), str(num), str(cond_num), str(x),str(num), str(cond_num+1),str(num), str(cond_num+1))
+                cond_num = cond_num +2
+            num = num +1
+    num = 1
+    for keyname in contrast.keys():
+        if not all(x==0 for x in contrast[keyname]):
+            text = text + '# Display images for contrast_orig %s\n set fmri(conpic_orig.%s) 1\n\n'%(str(num),str(num))
+            text = text + '# Title for contrast_orig %s\nset fmri(conname_orig.%s) \"%s\"\n\n'%(str(num),str(num),keyname)
+            cond_num =1
+            for x in contrast[keyname]:
+                text = text +'# Real contrast_orig vector %s element %s\nset fmri(con_orig%s.%s) %s\n\n'%(str(num), str(cond_num), str(num), str(cond_num), str(x))
+                cond_num = cond_num +1
+            num = num +1
+
+    text = text + '# Contrast masking - use >0 instead of thresholding?\nset fmri(conmask_zerothresh_yn) 0\n\n'
+    
+    for i in range(num):
+        for j in range(num):
+            if i!=j:
+                text = text + '# Mask real contrast/F-test %s with real contrast/F-test %s?\nset fmri(conmask%s_%s) 0\n\n'%(str(i+1),str(j+1),str(i+1),str(j+1))
+    text = text + short_footer
+    return text
+
+
+
 
 
 def EV_replace_value(directory, SUB_X,  SESSIONX):

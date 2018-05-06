@@ -1,0 +1,23 @@
+----------------------------------------
+Begin PBS Prologue Mon Apr 23 16:37:16 CEST 2018 1524494236
+Job ID:		   16143087.dccn-l029.dccn.nl
+Username:	   biahan
+Group:		   predatt
+Asked resources:   mem=12gb,ncpus=1,neednodes=1,nodes=1,procs=1,walltime=22:00:00
+Queue:		   batch
+Nodes:		   dccn-c021.dccn.nl
+End PBS Prologue Mon Apr 23 16:37:16 CEST 2018 1524494236
+----------------------------------------
+----------------------------------------
+Begin PBS Epilogue Mon Apr 23 18:51:38 CEST 2018 1524502298
+Job ID:		   16143087.dccn-l029.dccn.nl
+Username:	   biahan
+Group:		   predatt
+Job Name:	   feat_sub-5
+Session:	   23955
+Asked resources:   mem=12gb,ncpus=1,neednodes=1,nodes=1,procs=1,walltime=22:00:00
+Used resources:	   cput=00:54:28,mem=2848556kb,vmem=3448012kb,walltime=00:55:03
+Queue:		   batch
+Nodes:		   dccn-c021.dccn.nl
+End PBS Epilogue Mon Apr 23 18:51:38 CEST 2018 1524502298
+----------------------------------------

@@ -93,6 +93,8 @@ Button(master, text='Confirm', command=show_entry_fields).grid(
 mainloop()
 #%%u
 
+
+
 subj_num = subj_num[0]
 
 #%% Need to be changed

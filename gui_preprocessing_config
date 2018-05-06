@@ -1,8 +1,18 @@
-analysisname = '_task_hp128_fwhm0'
+para_dict = {
+        'FMRI_TR':'1.0000',
+        'FMRI_DElETEDVOLUMES':'5',
+        'FMRI_HIGHPASS':'128',
+        'FMRI_FWHM_SIZE':'0.0',
+        'TASKNAME':['task','localizer','pRF'],
+        'ANALYSISNAME':'hp128_fwhm0',
+        'CONDNAME':['hom,rnd,str,break,nobreak,pop1,pop2,pop3,pop4','left_down,left_up,right_down,right_up','none'],
+        
+        }
 
-#analysisname = '_localizer_hp128_fwhm0'
-condi = ['up_up','up_down','down_down','down_up']
-template_condi = ['down_left','up_left','down_right','up_right']
+
+
+
+
 initialdir = '/home/predatt/biahan/Project2/fMRI/Popout/data'
 
 alter_content='''
@@ -49,4 +59,27 @@ EV_content2 = '''
 # Orthogonalise EV NUM_X wrt EV NUM_Y
 set fmri(orthoNUM_X.NUM_Y) 0
 
+'''
+short_footer = '''
+
+# Do contrast masking at all?
+set fmri(conmask1_1) 0
+
+##########################################################
+# Now options that don't appear in the GUI
+
+# Alternative (to BETting) mask image
+set fmri(alternative_mask) ""
+
+# Initial structural space registration initialisation transform
+set fmri(init_initial_highres) ""
+
+# Structural space registration initialisation transform
+set fmri(init_highres) ""
+
+# Standard space registration initialisation transform
+set fmri(init_standard) ""
+
+# For full FEAT analysis: overwrite existing .feat output dir?
+set fmri(overwrite_yn) 0
 '''

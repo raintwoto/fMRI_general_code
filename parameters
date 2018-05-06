@@ -1,0 +1,16 @@
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May  6 12:34:47 2018
+
+@author: biahan
+"""
+
+para_dict = {
+        'FMRI_TR':'1.0000',
+        'FMRI_DElETEDVOLUMES':'5',
+        'FMRI_HIGHPASS':'128',
+        'TASKNAME':['task','localizer','pRF'],
+        'ANALYSISNAME':'hp128_fwhm0',
+        'CONDNAME':['hom,rnd,str,break,nobreak,pop1,pop2,pop3,pop4','left_down,left_up,right_down,right_up']
+        }

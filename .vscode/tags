@@ -1,0 +1,136 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Combobox	../gui_preprocessing.py	/^from ttk import Combobox$/;"	kind:namespace	line:18
+EV_2	../test.py	/^                     EV_2 = EV2$/;"	kind:variable	line:107
+EV_2	../test.py	/^                     EV_2 = EV_2.replace('NUM_X',str(i+1)) $/;"	kind:variable	line:108
+EV_2	../test.py	/^                     EV_2 = EV_2.replace('NUM_Y',str(j)) $/;"	kind:variable	line:109
+EV_alter	../test.py	/^EV_alter = 0$/;"	kind:variable	line:95
+EV_alter2	../test.py	/^EV_alter2=0$/;"	kind:variable	line:96
+EV_cond	../test.py	/^                     EV_cond = EV_cond +EV_2$/;"	kind:variable	line:110
+EV_cond	../test.py	/^                 EV_cond = EV1.replace('EV_NAMEX',EV_condis[i])$/;"	kind:variable	line:103
+EV_cond	../test.py	/^                 EV_cond = EV_cond.replace('NUM_X',str(i+1))                 $/;"	kind:variable	line:104
+EV_condis	../test.py	/^EV_condis = ['a','250v','vv']$/;"	kind:variable	line:94
+EV_conds	../test.py	/^                 EV_conds = EV_conds + EV_cond$/;"	kind:variable	line:111
+EV_conds	../test.py	/^             EV_conds =''$/;"	kind:variable	line:100
+EV_replace_value	../gui_preprocessing.py	/^def EV_replace_value(directory, SUB_X,  SESSIONX):$/;"	kind:function	line:358
+EV_replace_value	../test.py	/^def EV_replace_value(directory,SUB_X,SESSIONX):$/;"	kind:function	line:57
+EV_sessions	../test.py	/^EV_sessions=['1','2','3']$/;"	kind:variable	line:91
+EV_subject	../test.py	/^EV_subject = 'sub-3'$/;"	kind:variable	line:93
+Input_values	../gui_preprocessing.py	/^class Input_values:$/;"	kind:class	line:180
+MyDialog	../gui_preprocessing.py	/^class MyDialog:$/;"	kind:class	line:386
+Session	../gui_nii2bids.py	/^Session = []$/;"	kind:variable	line:60
+Session	../gui_nii2ekman.py	/^Session = []$/;"	kind:variable	line:59
+Tkconstants	../gui_nii2bids.py	/^import Tkconstants$/;"	kind:namespace	line:11
+Tkconstants	../gui_nii2ekman.py	/^import Tkinter, Tkconstants, tkFileDialog$/;"	kind:namespace	line:10
+Tkconstants	../gui_preprocessing.py	/^import Tkconstants$/;"	kind:namespace	line:13
+Tkinter	../gui_nii2bids.py	/^import Tkinter$/;"	kind:namespace	line:10
+Tkinter	../gui_nii2ekman.py	/^import Tkinter, Tkconstants, tkFileDialog$/;"	kind:namespace	line:10
+Type	../gui_nii2bids.py	/^Type = []$/;"	kind:variable	line:59
+Type	../gui_nii2ekman.py	/^Type = []$/;"	kind:variable	line:58
+__init__	../gui_preprocessing.py	/^    def __init__(self, parent):$/;"	kind:member	line:181
+__init__	../gui_preprocessing.py	/^    def __init__(self, parent):$/;"	kind:member	line:388
+analysisname	../test.py	/^analysisname = 'qq'$/;"	kind:variable	line:97
+brain_extraction	../gui_preprocessing.py	/^def brain_extraction():$/;"	kind:function	line:98
+cmdline	../kiill_cluster.py	/^    cmdline="qdel "+str(i)$/;"	kind:variable	line:12
+create_EV	../gui_preprocessing.py	/^def create_EV():$/;"	kind:function	line:175
+directory	../gui_preprocessing.py	/^directory = tkFileDialog.askdirectory($/;"	kind:variable	line:32
+directory	../test.py	/^directory = '.\/'$/;"	kind:variable	line:92
+f	../gui_preprocessing.py	/^f = open(directory+'\/..\/scripts\/subjects.txt', 'w+')$/;"	kind:variable	line:86
+f1	../gui_nii2bids.py	/^f1 = open('.\/gui_nii2bids_config', 'r').read()$/;"	kind:variable	line:16
+f1	../gui_nii2ekman.py	/^f1=open('.\/gui_nii2bids_config','r').read()$/;"	kind:variable	line:14
+f1	../gui_preprocessing.py	/^f1 = open('.\/gui_preprocessing_config', 'r').read()$/;"	kind:variable	line:26
+file	../gui_nii2bids.py	/^    file = master.directory+'\/'+file$/;"	kind:variable	line:30
+file	../gui_nii2ekman.py	/^     file =master.directory+'\/'+file$/;"	kind:variable	line:31
+file_info	../gui_nii2bids.py	/^        file_info = os.stat(file)$/;"	kind:variable	line:32
+file_info	../gui_nii2ekman.py	/^         file_info = os.stat(file)$/;"	kind:variable	line:33
+files	../gui_nii2bids.py	/^files = os.listdir(master.directory)$/;"	kind:variable	line:24
+files	../gui_nii2ekman.py	/^files = os.listdir(master.directory)$/;"	kind:variable	line:25
+files	../gui_preprocessing.py	/^files = os.listdir(directory)$/;"	kind:variable	line:35
+find_between	../gui_preprocessing.py	/^def find_between(s, first, last):$/;"	kind:function	line:49
+fmri_file	../gui_nii2bids.py	/^fmri_file = []$/;"	kind:variable	line:25
+fmri_file	../gui_nii2ekman.py	/^fmri_file = []$/;"	kind:variable	line:26
+fmri_filedir	../gui_nii2bids.py	/^fmri_filedir = []$/;"	kind:variable	line:26
+fmri_filedir	../gui_nii2ekman.py	/^fmri_filedir = []$/;"	kind:variable	line:27
+fmri_filesession	../gui_nii2bids.py	/^fmri_filesession = []$/;"	kind:variable	line:63
+fmri_filesession	../gui_nii2ekman.py	/^fmri_filesession = []$/;"	kind:variable	line:62
+fmri_filesize	../gui_nii2bids.py	/^fmri_filesize = []$/;"	kind:variable	line:27
+fmri_filesize	../gui_nii2ekman.py	/^fmri_filesize = []$/;"	kind:variable	line:28
+fmri_filetype	../gui_nii2bids.py	/^fmri_filetype = []$/;"	kind:variable	line:62
+fmri_filetype	../gui_nii2ekman.py	/^fmri_filetype = []$/;"	kind:variable	line:61
+fsf_full	../test.py	/^                         fsf_full = header$/;"	kind:variable	line:117
+fsf_full	../test.py	/^                     fsf_full = header$/;"	kind:variable	line:121
+fsf_full	../test.py	/^                fsf_full = header + al$/;"	kind:variable	line:113
+fsf_full	../test.py	/^             fsf_full = ''$/;"	kind:variable	line:101
+fsf_full	../test.py	/^             fsf_full = fsf_full + EV_conds$/;"	kind:variable	line:123
+fsf_full	../test.py	/^             fsf_full = fsf_full + footer$/;"	kind:variable	line:124
+fsl_full	../test.py	/^                         fsl_full = header + al$/;"	kind:variable	line:119
+gmtime	../gui_preprocessing.py	/^from time import gmtime, strftime$/;"	kind:namespace	line:416
+gui_nii2bids.py	../gui_nii2bids.py	1;"	kind:file	line:1
+gui_nii2ekman.py	../gui_nii2ekman.py	1;"	kind:file	line:1
+gui_preprocessing.py	../gui_preprocessing.py	1;"	kind:file	line:1
+img	../modulate_header_voloume.py	/^img = nib.load('\/home\/predatt\/biahan\/Project2\/fMRI\/Popout\/data\/sub-7\/func\/sub-7_pRF-1_bold.nii.gz')/;"	kind:variable	line:2
+kiill_cluster.py	../kiill_cluster.py	1;"	kind:file	line:1
+log_directory	../gui_preprocessing.py	/^log_directory = tkFileDialog.askdirectory($/;"	kind:variable	line:36
+master	../gui_nii2bids.py	/^master = Tk()$/;"	kind:variable	line:21
+master	../gui_nii2bids.py	/^master = Tk()$/;"	kind:variable	line:46
+master	../gui_nii2bids.py	/^master = Tk()$/;"	kind:variable	line:64
+master	../gui_nii2ekman.py	/^master = Tk()$/;"	kind:variable	line:22
+master	../gui_nii2ekman.py	/^master = Tk()$/;"	kind:variable	line:44
+master	../gui_nii2ekman.py	/^master = Tk()$/;"	kind:variable	line:63
+master	../gui_preprocessing.py	/^master = Tk()$/;"	kind:variable	line:31
+master	../gui_preprocessing.py	/^master = Tk()$/;"	kind:variable	line:58
+master	../gui_preprocessing.py	/^master = Tk()$/;"	kind:variable	line:95
+modulate_header_voloume.py	../modulate_header_voloume.py	1;"	kind:file	line:1
+more	../gui_preprocessing.py	/^    def more(self):$/;"	kind:member	line:250
+move	../gui_preprocessing.py	/^        from shutil import move$/;"	kind:namespace	line:234
+move	../gui_preprocessing.py	/^    def move(self):$/;"	kind:member	line:233
+new_file	../test.py	/^             new_file =directory+'.\/gui\/'+EV_subject+'_s'+EV_sess+analysisname+'.fsf'$/;"	kind:variable	line:126
+nib	../gui_preprocessing.py	/^import nibabel as nib$/;"	kind:namespace	line:23
+nib	../modulate_header_voloume.py	/^import nibabel as nib$/;"	kind:namespace	line:1
+ok	../gui_preprocessing.py	/^    def ok(self):$/;"	kind:member	line:257
+ok	../gui_preprocessing.py	/^    def ok(self):$/;"	kind:member	line:402
+os	../gui_nii2bids.py	/^import os$/;"	kind:namespace	line:13
+os	../gui_nii2ekman.py	/^import os$/;"	kind:namespace	line:11
+os	../gui_preprocessing.py	/^import os$/;"	kind:namespace	line:19
+pp	../kiill_cluster.py	/^pp = 15135189$/;"	kind:variable	line:10
+re	../gui_preprocessing.py	/^import re$/;"	kind:namespace	line:16
+re	../gui_preprocessing.py	/^import re$/;"	kind:namespace	line:22
+reg_T1	../gui_preprocessing.py	/^def reg_T1():$/;"	kind:function	line:419
+reg_func	../gui_preprocessing.py	/^def reg_func():$/;"	kind:function	line:440
+replace_word	../gui_preprocessing.py	/^def replace_word(infile, old_word, new_word):$/;"	kind:function	line:142
+run_freesurfer	../gui_preprocessing.py	/^def run_freesurfer():$/;"	kind:function	line:114
+run_fsf	../gui_preprocessing.py	/^def run_fsf():$/;"	kind:function	line:153
+sb	../gui_nii2bids.py	/^sb = Spinbox(master, from_=0, to=28, textvariable=var).grid(row=0, column=1)$/;"	kind:variable	line:50
+sb	../gui_nii2ekman.py	/^sb = Spinbox(master,from_=0,to=28,textvariable=var).grid(row=0,column=1)$/;"	kind:variable	line:48
+selection_list	../gui_preprocessing.py	/^selection_list = dict()$/;"	kind:variable	line:62
+show_entry_fields	../gui_nii2bids.py	/^def show_entry_fields():$/;"	kind:function	line:72
+show_entry_fields	../gui_nii2ekman.py	/^def show_entry_fields():$/;"	kind:function	line:70
+show_entry_fields	../gui_preprocessing.py	/^def show_entry_fields():$/;"	kind:function	line:65
+spinbox_num	../gui_nii2bids.py	/^def spinbox_num():$/;"	kind:function	line:41
+spinbox_num	../gui_nii2ekman.py	/^def spinbox_num():$/;"	kind:function	line:40
+strftime	../gui_preprocessing.py	/^from time import gmtime, strftime$/;"	kind:namespace	line:416
+subj_num	../gui_nii2bids.py	/^subj_num = []$/;"	kind:variable	line:38
+subj_num	../gui_nii2bids.py	/^subj_num = subj_num[0]$/;"	kind:variable	line:98
+subj_num	../gui_nii2ekman.py	/^subj_num=[]$/;"	kind:variable	line:39
+subj_num	../gui_nii2ekman.py	/^subj_num=subj_num[0]$/;"	kind:variable	line:94
+subjlist	../gui_preprocessing.py	/^subjlist = []$/;"	kind:variable	line:61
+subprocess	../gui_preprocessing.py	/^import subprocess$/;"	kind:namespace	line:21
+subprocess	../kiill_cluster.py	/^import subprocess$/;"	kind:namespace	line:8
+sys	../kiill_cluster.py	/^import sys$/;"	kind:namespace	line:9
+test.py	../test.py	1;"	kind:file	line:1
+text_file	../test.py	/^             text_file = open(new_file, "w")$/;"	kind:variable	line:127
+tkFileDialog	../gui_nii2bids.py	/^import tkFileDialog$/;"	kind:namespace	line:12
+tkFileDialog	../gui_nii2ekman.py	/^import Tkinter, Tkconstants, tkFileDialog$/;"	kind:namespace	line:10
+tkFileDialog	../gui_preprocessing.py	/^import tkFileDialog$/;"	kind:namespace	line:14
+tkMessageBox	../gui_preprocessing.py	/^import tkMessageBox$/;"	kind:namespace	line:15
+tmp	../gui_nii2bids.py	/^    tmp = file$/;"	kind:variable	line:29
+tmp	../gui_nii2ekman.py	/^     tmp = file$/;"	kind:variable	line:30
+ttk	../gui_preprocessing.py	/^import ttk$/;"	kind:namespace	line:17
+var	../gui_nii2bids.py	/^var = StringVar(master)$/;"	kind:variable	line:48
+var	../gui_nii2ekman.py	/^var = StringVar(master)$/;"	kind:variable	line:46
+var	../gui_preprocessing.py	/^var = []$/;"	kind:variable	line:59
+varlist	../gui_preprocessing.py	/^varlist = []$/;"	kind:variable	line:60
