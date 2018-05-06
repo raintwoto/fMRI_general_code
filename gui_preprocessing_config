@@ -1,7 +1,7 @@
 para_dict = {
         'FMRI_TR':'1.0000',
         'FMRI_DElETEDVOLUMES':'5',
-        'FMRI_HIGHPASS':'128',
+        'FMRI_HIGHPASS':['100','128'],
         'FMRI_FWHM_SIZE':'0.0',
         'TASKNAME':['task','localizer','pRF'],
         'ANALYSISNAME':'hp128_fwhm0',

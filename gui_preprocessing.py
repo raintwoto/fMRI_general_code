@@ -191,11 +191,11 @@ class Input_values:
         # if os.path.exists('./default_cond.txt'):
         #     cond_name_txt = open('./default_cond.txt', 'r').read().replace('\n','')
         #     self.Text_Entry1.insert(END, cond_name_txt)
-        Label(top, text="Sub Name (e.g.'sub-15'):").grid(row=0, sticky=W)
+        Label(top, text="Sub list (e.g.'sub-8:sub-12'):").grid(row=0, sticky=W)
         self.Text_Entry3 = Entry(top)
         self.Text_Entry3.grid(row=0, column=1,sticky=W)
 
-        Label(top, text="Sesisson Num (e.g.'1,2,3,4'):").grid(row=1, sticky=W)
+        Label(top, text="Sesisson Num (e.g.'1:4'):").grid(row=1, sticky=W)
         self.Text_Entry2 = Entry(top)
         self.Text_Entry2.grid(row=1, column=1,sticky=W)
 
@@ -285,13 +285,35 @@ class Input_values:
         text_from_Box3 = self.Text_Entry3.get()
         print text_from_Box3
         EV_sessions = [x for x in text_from_Box2.split(",")]
-        EV_subject = text_from_Box3
-        if not os.path.exists(directory+'/'+EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())):
-            os.makedirs(directory+'/'+EV_subject+'/func/old/' +
-                        strftime("%Y-%m-%d", gmtime()))
-        for EV_sess in EV_sessions:
-            move(directory+'/'+EV_subject+'/func/'+EV_subject+analysisname+'_s'+EV_sess+'.feat', directory+'/' +
-                 EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())+'/'+EV_subject+analysisname+'_s'+EV_sess+'.feat')
+
+         
+        new_sublist = []
+        EV_subjects = [x for x in text_from_Box3.split(",")]
+        for EV_subject_all in EV_subjects:
+            if ':' in EV_subject_all:
+                new_subject = [x for x in EV_subject_all.split(":")]
+                
+                new_subnum = [x for x in new_subject[0].split("-")]
+                new_subnum2 = [x for x in new_subject[1].split("-")]
+
+                
+                numbegin = int(new_subnum[1])
+                numend = int(new_subnum2[1])
+                new_ses = range(numbegin, numend+1)
+                for x in new_ses:
+                    new_sublist.append('sub-'+str(x))
+            else:
+                new_sublist.append(EV_subject_all)
+        print new_sublist
+
+     # EV_subject = text_from_Box3
+        for EV_subject in new_sublist:
+            if not os.path.exists(directory+'/'+EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())):
+                os.makedirs(directory+'/'+EV_subject+'/func/old/' +
+                            strftime("%Y-%m-%d", gmtime()))
+            for EV_sess in EV_sessions:
+                move(directory+'/'+EV_subject+'/func/'+EV_subject+analysisname+'_s'+EV_sess+'.feat', directory+'/' +
+                    EV_subject+'/func/old/'+strftime("%Y-%m-%d", gmtime())+'/'+EV_subject+analysisname+'_s'+EV_sess+'.feat')
 
     def more(self):
         contrast_name = tkFileDialog.askopenfilenames(
@@ -318,8 +340,8 @@ class Input_values:
         EV_sessions = [x for x in text_from_Box2.split(",")]
         new_EV_sessions = []
         for EV_ses in EV_sessions:
-            if '-' in EV_ses:
-                new_EV = [x for x in EV_ses.split("-")]
+            if ':' in EV_ses:
+                new_EV = [x for x in EV_ses.split(":")]
                 numbegin = int(new_EV[0])
                 numend = int(new_EV[1])
                 new_ses = range(numbegin, numend+1)
@@ -328,8 +350,27 @@ class Input_values:
             else:
                 new_EV_sessions.append(EV_ses)
         print new_EV_sessions
+        
+        new_sublist = []
+        EV_subjects = [x for x in text_from_Box3.split(",")]
+        for EV_subject_all in EV_subjects:
+            if ':' in EV_subject_all:
+                new_subject = [x for x in EV_subject_all.split(":")]
+                
+                new_subnum = [x for x in new_subject[0].split("-")]
+                new_subnum2 = [x for x in new_subject[1].split("-")]
 
-        EV_subject = text_from_Box3
+                
+                numbegin = int(new_subnum[1])
+                numend = int(new_subnum2[1])
+                new_ses = range(numbegin, numend+1)
+                for x in new_ses:
+                    new_sublist.append('sub-'+str(x))
+            else:
+                new_sublist.append(EV_subject_all)
+        print new_sublist
+
+
       
         EV_alter = self.var2.get()
         EV_alter2 = self.var3.get()
@@ -338,81 +379,84 @@ class Input_values:
 
         print 'EV_alter:'+str(EV_alter)
         print 'EV_alter2:'+str(EV_alter2)
-        for EV_sess in new_EV_sessions:
-            imgshape = nib.load(directory+'/'+EV_subject+'/func/'+EV_subject+'_'+real_dict['TASKNAME']+'-'+EV_sess+'_bold.nii.gz').shape
-            contrast_filename = self.Text_Entry1.get()
 
-            real_dict['FMRI_VOLUMES'] = str(imgshape[3])
-            real_dict['FMRI_TOTOALVOXELS'] = str(imgshape[0]*imgshape[1]*imgshape[2]*imgshape[3])
+        for EV_subject in new_sublist:
 
-            if contrast_filename == 'NONE':
-                real_dict['CONTRAST_NUM'] = str(1)
-            else:
-                file_in_contrast = open(contrast_filename,'r').read()
-                exec(file_in_contrast)
-                num = 0
-                for keyname in contrast.keys():
-                    if not all(x==0 for x in contrast[keyname]):
-                        num = num + 1
-                real_dict['CONTRAST_NUM'] = str(num)
+            for EV_sess in new_EV_sessions:
+                imgshape = nib.load(directory+'/'+EV_subject+'/func/'+EV_subject+'_'+real_dict['TASKNAME']+'-'+EV_sess+'_bold.nii.gz').shape
+                contrast_filename = self.Text_Entry1.get()
 
+                real_dict['FMRI_VOLUMES'] = str(imgshape[3])
+                real_dict['FMRI_TOTOALVOXELS'] = str(imgshape[0]*imgshape[1]*imgshape[2]*imgshape[3])
 
-            EV1, EV2, header, footer, al = EV_replace_value(
-                directory, EV_subject, EV_sess)
-            EV_conds = ''
-            fsf_full = ''
-            header = header.replace('EV_TOTAL', str(len(EV_condis)))
-            header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
-
-            for keyname in real_dict.keys():
-                header = header.replace(keyname, real_dict[keyname])
+                if contrast_filename == 'NONE':
+                    real_dict['CONTRAST_NUM'] = str(1)
+                else:
+                    file_in_contrast = open(contrast_filename,'r').read()
+                    exec(file_in_contrast)
+                    num = 0
+                    for keyname in contrast.keys():
+                        if not all(x==0 for x in contrast[keyname]):
+                            num = num + 1
+                    real_dict['CONTRAST_NUM'] = str(num)
 
 
-            for i in range(0, len(EV_condis)):
-                EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
-                EV_cond = EV_cond.replace('NUM_X', str(i+1))
+                EV1, EV2, header, footer, al = EV_replace_value(
+                    directory, EV_subject, EV_sess)
+                EV_conds = ''
+                fsf_full = ''
+                header = header.replace('EV_TOTAL', str(len(EV_condis)))
+                header = header.replace('EV_2TOTAL', str(2*(len(EV_condis))))
 
-                for j in range(0, len(EV_condis)+1):
-                    EV_2 = EV2
-                    EV_2 = EV_2.replace('NUM_X', str(i+1))
-                    EV_2 = EV_2.replace('NUM_Y', str(j))
-                    EV_cond = EV_cond + EV_2
-                EV_conds = EV_conds + EV_cond
-            if EV_alter:
-                header = header.replace('ALTER_X', '1')
-                fsf_full = fsf_full + header
-                fsf_full = fsf_full + al
-            else:
-                if EV_alter2:
-                    if EV_sess == '1':
+                for keyname in real_dict.keys():
+                    header = header.replace(keyname, real_dict[keyname])
+
+
+                for i in range(0, len(EV_condis)):
+                    EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
+                    EV_cond = EV_cond.replace('NUM_X', str(i+1))
+
+                    for j in range(0, len(EV_condis)+1):
+                        EV_2 = EV2
+                        EV_2 = EV_2.replace('NUM_X', str(i+1))
+                        EV_2 = EV_2.replace('NUM_Y', str(j))
+                        EV_cond = EV_cond + EV_2
+                    EV_conds = EV_conds + EV_cond
+                if EV_alter:
+                    header = header.replace('ALTER_X', '1')
+                    fsf_full = fsf_full + header
+                    fsf_full = fsf_full + al
+                else:
+                    if EV_alter2:
+                        if EV_sess == '1':
+                            header = header.replace('ALTER_X', '0')
+                            fsf_full = fsf_full + header
+                        else:
+                            header = header.replace('ALTER_X', '1')
+                            fsf_full = fsf_full + header
+                            fsf_full = fsf_full + al
+                    else:
                         header = header.replace('ALTER_X', '0')
                         fsf_full = fsf_full + header
-                    else:
-                        header = header.replace('ALTER_X', '1')
-                        fsf_full = fsf_full + header
-                        fsf_full = fsf_full + al
+
+                
+                fsf_full = fsf_full + EV_conds
+                
+                if contrast_filename == 'NONE':
+                    fsf_full = fsf_full + footer
                 else:
-                    header = header.replace('ALTER_X', '0')
-                    fsf_full = fsf_full + header
-
-            
-            fsf_full = fsf_full + EV_conds
-            
-            if contrast_filename == 'NONE':
-                fsf_full = fsf_full + footer
-            else:
-                new_footer = create_footer(contrast_filename)
-                fsf_full = fsf_full + new_footer
+                    new_footer = create_footer(contrast_filename)
+                    fsf_full = fsf_full + new_footer
 
 
 
-            new_file = log_directory+'/feat/'+EV_subject+'_s'+EV_sess+'_'+real_dict['TASKNAME']+'_'+real_dict['ANALYSISNAME']+'.fsf'
-      
+                new_file = log_directory+'/feat/'+EV_subject+'_s'+EV_sess+'_'+real_dict['TASKNAME']+'_'+real_dict['ANALYSISNAME']+'.fsf'
+        
 
-            
-            text_file = open(new_file, "w")
-            text_file.write(fsf_full)
-            text_file.close()
+                
+                text_file = open(new_file, "w")
+                text_file.write(fsf_full)
+                text_file.close()
         self.top.destroy()
 
     # NUM_X
