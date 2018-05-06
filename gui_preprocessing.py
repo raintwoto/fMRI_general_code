@@ -20,6 +20,7 @@ import os
 from shutil import *
 import subprocess
 import re
+import nibabel as nib
 
 
 f1 = open('./gui_preprocessing_config', 'r').read()

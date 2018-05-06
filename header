@@ -30,16 +30,16 @@ set fmri(featwatcher_yn) 1
 set fmri(sscleanup_yn) 0
 
 # Output directory
-set fmri(outputdir) "DIRECTORY-X/SUB-X/func/SUB-X_task_hp128_fwhm0_sSESSIONX"
+set fmri(outputdir) "DIRECTORY-X/SUB-X/func/SUB-X_TASKNAME_ANALYSISNAME_sSESSIONX"
 
 # TR(s)
-set fmri(tr) 0.900000 
+set fmri(tr) FMRI_TR 
 
 # Total volumes
-set fmri(npts) 1450
+set fmri(npts) FMRI_VOLUMES
 
 # Delete volumes
-set fmri(ndelete) 5
+set fmri(ndelete) FMRI_DElETEDVOLUMES
 
 # Perfusion tag/control order
 set fmri(tagfirst) 1
@@ -257,17 +257,17 @@ set fmri(regstandard_nonlinear_yn) 0
 set fmri(regstandard_nonlinear_warpres) 10 
 
 # High pass filter cutoff
-set fmri(paradigm_hp) 128
+set fmri(paradigm_hp) FMRI_HIGHPASS
 
 # Total voxels
-set fmri(totalVoxels) 470496000
+set fmri(totalVoxels) FMRI_TOTOALVOXELS
 
 
 # Number of lower-level copes feeding into higher-level analysis
 set fmri(ncopeinputs) 0
 
 # 4D AVW data or FEAT directory (1)
-set feat_files(1) "DIRECTORY-X/SUB-X/func/SUB-X_task-SESSIONX_bold"
+set feat_files(1) "DIRECTORY-X/SUB-X/func/SUB-X_TASKNAME-SESSIONX_bold"
 
 # Add confound EVs text file
 set fmri(confoundevs) 0
