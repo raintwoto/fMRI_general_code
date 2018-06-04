@@ -402,7 +402,7 @@ class Input_values:
 
 
                 EV1, EV2, header, footer, al = EV_replace_value(
-                    directory, EV_subject, EV_sess)
+                    directory, EV_subject, EV_sess,real_dict)
                 EV_conds = ''
                 fsf_full = ''
                 header = header.replace('EV_TOTAL', str(len(EV_condis)))
@@ -410,7 +410,6 @@ class Input_values:
 
                 for keyname in real_dict.keys():
                     header = header.replace(keyname, real_dict[keyname])
-
 
                 for i in range(0, len(EV_condis)):
                     EV_cond = EV1.replace('EV_NAMEX', EV_condis[i])
@@ -503,10 +502,13 @@ def create_footer(contrast_filename):
 
 
 
-def EV_replace_value(directory, SUB_X,  SESSIONX):
+def EV_replace_value(directory, SUB_X,  SESSIONX,real_dict):
     header = open('./header', 'r').read()
     footer = open('./footer', 'r').read()
     al = alter_content[:]
+    for keyname in real_dict.keys():
+        al = al.replace(keyname, real_dict[keyname])
+    
     EV1 = EV_content1[:]
     EV2 = EV_content2[:]
     header = header.replace('DIRECTORY-X', directory)
@@ -527,7 +529,9 @@ def EV_replace_value(directory, SUB_X,  SESSIONX):
     al = al.replace('SUB-X', SUB_X)
     EV1 = EV1.replace('SUB-X', SUB_X)
     EV2 = EV2.replace('SUB-X', SUB_X)
-
+    
+        
+        
     return EV1, EV2, header, footer, al
 
 
