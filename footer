@@ -8,7 +8,7 @@ set fmri(con_mode) orig
 set fmri(conpic_real.1) 1
 
 # Title for contrast_real 1
-set fmri(conname_real.1) "up_down"
+set fmri(conname_real.1) "NONE"
 
 # Real contrast_real vector 1 element 1
 set fmri(con_real1.1) 1
@@ -16,41 +16,15 @@ set fmri(con_real1.1) 1
 # Real contrast_real vector 1 element 2
 set fmri(con_real1.2) 0
 
-# Real contrast_real vector 1 element 3
-set fmri(con_real1.3) 0
-
-# Real contrast_real vector 1 element 4
-set fmri(con_real1.4) 0
-
-# Real contrast_real vector 1 element 5
-set fmri(con_real1.5) 0
-
-# Real contrast_real vector 1 element 6
-set fmri(con_real1.6) 0
-
-# Real contrast_real vector 1 element 7
-set fmri(con_real1.7) 0
-
-# Real contrast_real vector 1 element 8
-set fmri(con_real1.8) 0
-
 # Display images for contrast_orig 1
 set fmri(conpic_orig.1) 1
 
 # Title for contrast_orig 1
-set fmri(conname_orig.1) "up_down"
+set fmri(conname_orig.1) "NONE"
 
 # Real contrast_orig vector 1 element 1
 set fmri(con_orig1.1) 1
 
-# Real contrast_orig vector 1 element 2
-set fmri(con_orig1.2) 0
-
-# Real contrast_orig vector 1 element 3
-set fmri(con_orig1.3) 0
-
-# Real contrast_orig vector 1 element 4
-set fmri(con_orig1.4) 0
 
 # Contrast masking - use >0 instead of thresholding?
 set fmri(conmask_zerothresh_yn) 0

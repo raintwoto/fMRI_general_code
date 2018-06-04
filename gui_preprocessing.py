@@ -253,14 +253,14 @@ class Input_values:
     def new_contrast(self):
         text_from_Box1 = self.variable['CONDNAME'].get()
         EV_condis = [x for x in text_from_Box1.split(",")]
-        text = '# Leave unwanted contrast as 0\n #            '
+        text = '# Leave unwanted contrast as 0\n# if you want the contrast to be ordered, keep the numbers\n#            '
         for EV_cond in EV_condis:
             text = text + EV_cond
             text = text + '\t'
         text = text + '\ncontrast = { \n'
         num=1
         for EV_cond in EV_condis:
-            text = text + '\'NAME' + str(num)+'\':[\t'
+            text = text + '\''+str(num)+'NAME' + '\':[\t'
             for EV_cond in EV_condis:
                 text = text + '0,\t'
             text = text+'],\n'
@@ -395,7 +395,7 @@ class Input_values:
                     file_in_contrast = open(contrast_filename,'r').read()
                     exec(file_in_contrast)
                     num = 0
-                    for keyname in contrast.keys():
+                    for keyname in sorted(contrast.keys()):
                         if not all(x==0 for x in contrast[keyname]):
                             num = num + 1
                     real_dict['CONTRAST_NUM'] = str(num)
@@ -469,7 +469,7 @@ def create_footer(contrast_filename):
     exec(file_in_contrast)
     text = '# Contrast & F-tests mode\n# real : control real EVs\n# orig : control original EVs\nset fmri(con_mode_old) orig\nset fmri(con_mode) orig\n'
     num = 1
-    for keyname in contrast.keys():
+    for keyname in sorted(contrast.keys()):
         if not all(x==0 for x in contrast[keyname]):
             text = text + '# Display images for contrast_real %s\nset fmri(conpic_real.%s) 1\n\n'%(str(num),str(num))
             text = text + '# Title for contrast_real %s\nset fmri(conname_real.%s) \"%s\"\n\n'%(str(num),str(num),keyname)
@@ -480,7 +480,7 @@ def create_footer(contrast_filename):
                 cond_num = cond_num +2
             num = num +1
     num = 1
-    for keyname in contrast.keys():
+    for keyname in sorted(contrast.keys()):
         if not all(x==0 for x in contrast[keyname]):
             text = text + '# Display images for contrast_orig %s\n set fmri(conpic_orig.%s) 1\n\n'%(str(num),str(num))
             text = text + '# Title for contrast_orig %s\nset fmri(conname_orig.%s) \"%s\"\n\n'%(str(num),str(num),keyname)
